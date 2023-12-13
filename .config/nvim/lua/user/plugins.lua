@@ -3,10 +3,8 @@ require('packer').startup({
 	function()
 		use { 'wbthomason/packer.nvim' }
 
-		-- themes
-		use { 'Mofiqul/dracula.nvim' };
-
 		use { "ellisonleao/gruvbox.nvim" }
+
 		-- editing
 		use { 'windwp/nvim-autopairs',
 			config = function()
@@ -27,6 +25,21 @@ require('packer').startup({
 
 		use { "williamboman/mason-lspconfig.nvim" };
 
+		use({
+			"stevearc/conform.nvim",
+			config = function()
+				require('user._conform')
+			end,
+		})
+		--copilot
+		use {
+			"zbirenbaum/copilot.lua",
+			cmd = "Copilot",
+			event = "InsertEnter",
+			config = function()
+				require("copilot").setup({})
+			end,
+		}
 		-- cmp
 		use { "hrsh7th/nvim-cmp",
 			config = function()
