@@ -1,137 +1,161 @@
----@diagnostic disable: undefined-global
-require('packer').startup({
-	function()
-		use { 'wbthomason/packer.nvim' }
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
 
-		use { "ellisonleao/gruvbox.nvim" }
+require("lazy").setup({
 
-		-- editing
-		use { 'windwp/nvim-autopairs',
-			config = function()
-				require('user.autopairs')
-			end,
-		};
-		use { 'nvim-treesitter/nvim-treesitter',
-			config = function()
-				require('user.treesitter')
-			end,
-		};
+	-- themes
+	"Mofiqul/dracula.nvim",
 
-		-- lsp
-		use { 'neovim/nvim-lspconfig' };
+	"ellisonleao/gruvbox.nvim",
+	--editing
+	{
+		"windwp/nvim-autopairs",
+		config = function()
+			require("user._autopairs")
+		end,
+	},
 
-		use { "williamboman/mason.nvim",
-		};
+	{
+		"nvim-treesitter/nvim-treesitter",
+		config = function()
+			require("user._treesitter")
+		end,
+	},
 
-		use { "williamboman/mason-lspconfig.nvim" };
+	-- lsp
+	"neovim/nvim-lspconfig",
 
-		use({
-			"stevearc/conform.nvim",
-			config = function()
-				require('user._conform')
-			end,
-		})
-		--copilot
-		use {
-			"zbirenbaum/copilot.lua",
-			cmd = "Copilot",
-			event = "InsertEnter",
-			config = function()
-				require("user._copilot")
-			end,
-		}
-		-- cmp
-		use {
-			"zbirenbaum/copilot-cmp",
-			after = { "copilot.lua" },
-			config = function()
-				require("copilot_cmp").setup()
-			end
-		}
-		use { "hrsh7th/nvim-cmp",
-			config = function()
-				require('user._cmp')
-			end,
-		};
+	"williamboman/mason.nvim",
 
-		use { "hrsh7th/cmp-nvim-lsp",
-			config = function()
-				require('user._cmp')
-			end,
-		};
+	"williamboman/mason-lspconfig.nvim",
 
-		use { "hrsh7th/cmp-buffer" };
+	--format
+	{
+		"stevearc/conform.nvim",
+		config = function()
+			require("user._conform")
+		end,
+	},
 
-		use { "hrsh7th/cmp-path" };
+	-- cmp
+	{
+		"hrsh7th/nvim-cmp",
+		config = function()
+			require("user._cmp")
+		end,
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"L3MON4D3/LuaSnip",
+		},
+	},
 
-		-- git-neovim integration
-		use {
-			'lewis6991/gitsigns.nvim',
-			config = function()
-				require('user.gitsigns')
-			end,
-		};
-
-		-- snippet engine
-		use { "L3MON4D3/LuaSnip" };
-
-		-- UI
-		use { 'kyazdani42/nvim-tree.lua',
-			config = function()
-				require('user.tree')
-			end,
-			requires = { 'kyazdani42/nvim-web-devicons' }
-		};
-
-		use { 'michaelb/sniprun', run = 'sh ./install.sh' }
-
-		use {
-			'akinsho/bufferline.nvim',
-			config = function()
-				require('user.barbar')
-			end,
-			tag = "v3.*",
-			requires = 'nvim-tree/nvim-web-devicons',
+	--copilot
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("user._copilot")
+		end,
+	},
+	-- copilot_cmp
+	{
+		"zbirenbaum/copilot-cmp",
+		config = function()
+			require("copilot_cmp").setup()
+		end,
+		dependencies = {
+			"zbirenbaum/copilot.lua"
 		}
 
-		use { "akinsho/toggleterm.nvim",
-			config = function()
-				require('user.toggleterm')
-			end,
+	},
 
-		};
+	-- git-neovim integration
+	{
+		"lewis6991/gitsigns.nvim",
+		config = function()
+			require("user._gitsigns")
+		end,
+	},
 
-		use { 'nvim-telescope/telescope.nvim',
-			requires = { { 'nvim-lua/plenary.nvim' } },
-			config = function()
-				require('user.telescope')
-			end,
-		};
+	-- UI
+	{
+		"kyazdani42/nvim-tree.lua",
+		config = function()
+			require("user._tree")
+		end,
+		dependencies = { "kyazdani42/nvim-web-devicons" },
+	},
 
-		use { "lukas-reineke/indent-blankline.nvim" };
+	{
+		"michaelb/sniprun",
+		build = "sh ./install.sh",
+	},
 
-		use {
-			'nvim-lualine/lualine.nvim',
-			requires = { 'kyazdani42/nvim-web-devicons', opt = true },
-			config = function()
-				require('user.lualine')
-			end,
-		}
+	{
+		"akinsho/bufferline.nvim",
+		config = function()
+			require("user._barbar")
+		end,
+		version = "v3.*",
+		dependencies = { "nvim-tree/nvim-web-devicons", name = 'tree_nvim_web_devicons' },
+	},
 
-		use {
-			'glepnir/dashboard-nvim',
-			event = 'VimEnter',
-			config = function()
-				require('user.dashboard')
-			end,
-			requires = { 'nvim-tree/nvim-web-devicons' }
-		}
-		--lspkind
-		use {
-			'onsails/lspkind-nvim',
-			config = function()
-				require('user._lspkind')
-			end,
-		}
-	end
+	{
+		"akinsho/toggleterm.nvim",
+		config = function()
+			require("user._toggleterm")
+		end,
+	},
+
+	{
+		"nvim-telescope/telescope.nvim",
+		dependencies = "nvim-lua/plenary.nvim",
+		config = function()
+			require("user._telescope")
+		end,
+	},
+
+	{ "lukas-reineke/indent-blankline.nvim" },
+
+	{
+		"nvim-lualine/lualine.nvim",
+		config = function()
+			require("user._lualine")
+		end,
+		dependencies = { "kyazdani42/nvim-web-devicons", }
+	},
+
+	{
+		"folke/drop.nvim",
+		event = "VimEnter",
+		config = function()
+			require("drop").setup({
+				theme = "xmas",
+			})
+		end,
+	},
+
+	{
+		"glepnir/dashboard-nvim",
+		event = "VimEnter",
+		config = function()
+			require("user._dashboard")
+		end,
+		dependencies = { { 'nvim-tree/nvim-web-devicons', name = 'tree_nvim_web_devicons' } },
+	},
+
+	"onsails/lspkind-nvim",
 })
