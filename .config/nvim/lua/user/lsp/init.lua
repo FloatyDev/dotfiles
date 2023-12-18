@@ -5,6 +5,7 @@ local language_servers_installed = {
 	"clangd",
 	"lua_ls",
 	"pyright",
+	"bashls"
 };
 
 -- Mappings.
@@ -44,9 +45,7 @@ end
 
 for _, server in ipairs(language_servers_installed) do
 	require('lspconfig')[server].setup {
-		on_attach = on_attach,
-		capabilities = require("cmp_nvim_lsp").default_capabilities(),
-	}
+		on_attach = on_attach, capabilities = require("cmp_nvim_lsp").default_capabilities(), }
 end
 
 vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]

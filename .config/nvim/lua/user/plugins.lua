@@ -37,19 +37,26 @@ require('packer').startup({
 			cmd = "Copilot",
 			event = "InsertEnter",
 			config = function()
-				require("copilot").setup({})
+				require("user._copilot")
 			end,
 		}
 		-- cmp
+		use {
+			"zbirenbaum/copilot-cmp",
+			after = { "copilot.lua" },
+			config = function()
+				require("copilot_cmp").setup()
+			end
+		}
 		use { "hrsh7th/nvim-cmp",
 			config = function()
-				require('user.cmp')
+				require('user._cmp')
 			end,
 		};
 
 		use { "hrsh7th/cmp-nvim-lsp",
 			config = function()
-				require('user.cmp')
+				require('user._cmp')
 			end,
 		};
 
@@ -118,6 +125,13 @@ require('packer').startup({
 				require('user.dashboard')
 			end,
 			requires = { 'nvim-tree/nvim-web-devicons' }
+		}
+		--lspkind
+		use {
+			'onsails/lspkind-nvim',
+			config = function()
+				require('user._lspkind')
+			end,
 		}
 	end
 })

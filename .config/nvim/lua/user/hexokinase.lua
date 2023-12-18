@@ -1,1 +1,0 @@
--- github.com/RRethy/vim-hexokinase
