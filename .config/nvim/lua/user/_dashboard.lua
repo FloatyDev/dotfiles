@@ -62,11 +62,11 @@ local center = {
 	},
 
 	{
-		desc = "Update Plugins",
+		desc = "Lazy",
 		keymap = "",
-		key = "u",
+		key = "l",
 		icon = "󰚰 ",
-		action = "PackerSync",
+		action = "Lazy",
 	},
 
 	{
