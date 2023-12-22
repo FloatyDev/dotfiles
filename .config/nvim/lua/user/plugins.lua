@@ -39,6 +39,8 @@ require("lazy").setup({
 
 	"williamboman/mason-lspconfig.nvim",
 
+	'mfussenegger/nvim-jdtls',
+
 	--format
 	{
 		"stevearc/conform.nvim",
