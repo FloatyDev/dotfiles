@@ -1,0 +1,129 @@
+# alacritty configuration file.
+window:
+  dimensions:
+    columns: 120
+    lines: 32
+
+  padding:
+    x: 0
+    y: 0
+      # y= 0 , size: 15,5 --perfect fitting
+      # y= 9 , size: 13.5 --almost perfect fitting
+  dynamic_padding: true
+
+  decorations: none
+  startup_mode: Windowed # Windowed, Maximized, Fullscreen
+  opacity: 0.93
+#draw_bold_text_with_bright_colors: true
+#
+#scrolling:
+#  history: 5000
+#  multiplier: 3
+#colors:
+#  primary:
+#    background: '#282828'
+#    foreground: '#ebdbb2'
+#  normal:
+#    black: '#282828'
+#    red: '#cc241d'
+#    green: '#98971a'
+#    yellow: '#d79921'
+#    blue: '#458588'
+#    magenta: '#b16286'
+#    cyan: '#689d6a'
+#    white: '#a89984'
+#  bright:
+#    black: '#928374'
+#    red: '#fb4934'
+#    green: '#b8bb26'
+#    yellow: '#fabd2f'
+#    blue: '#83a598'
+#    magenta: '#d3869b'
+#    cyan: '#8ec07c'
+#    white: '#ebdbb2'
+#theme: Gruvbox-Dark
+#
+#font:
+#  normal:
+#    family: FiraCode Nerd Font
+#  size: 13.5
+#window:
+#    opacity: 0.8
+#    dimensions:
+#        colums: 120
+#        rows: 80
+#    padding:
+#        x: 0
+#        y: 0
+#    dynamic_padding: true
+#    decorations: none # full, none
+
+colors:
+  primary:
+    background: '#1D2021'
+    foreground: '#ebdbb2'
+  normal:
+    black: '#282828'
+    red: '#cc241d'
+    green: '#98971a'
+    yellow: '#d79921'
+    blue: '#458588'
+    magenta: '#b16286'
+    cyan: '#689d6a'
+    white: '#a89984'
+  bright:
+    black: '#928374'
+    red: '#fb4934'
+    green: '#b8bb26'
+    yellow: '#fabd2f'
+    blue: '#83a598'
+    magenta: '#d3869b'
+    cyan: '#8ec07c'
+    white: '#ebdbb2'
+theme: Gruvbox-Dark
+
+font:
+    normal:
+        family: FiraCode Nerd Font
+        style: Regular
+    bold:
+        family: FiraCode Nerd Font
+        style: Bold
+    italic:
+        family: FiraCode Nerd Font
+        style: Italic
+    size:
+        13.0
+    offset:
+        x: 0
+        y: 0
+    glyph_offset:
+        x: 0
+        y: 0
+scrolling:
+    history: 10000
+mouse:
+    double_click: { threshold: 300 }
+    triple_click: { threshold: 300 }
+    hide_when_typing: true
+hints:
+    enabled:
+      - regex: "(magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
+        command: echo "hello"
+        post_processing: true
+        mouse:
+            enabled: true
+            mods: Control
+draw_bold_text_with_bright_colors: true
+cursor:
+    style: Block
+    unfocused_hollow: true
+live_config_reload: true
+mouse_bindings:
+    - { mouse: Right, action: Copy }
+    - { mouse: Right, mods: Control, action: Paste }
+    - { mouse: Middle, action: Paste }
+    - { mouse: Middle, mods: Control, action: PasteSelection }
+key_binding:
+    - { key: V, mods: Control|Shift, action: Paste }
+    - { key: C, mods: Control|Shift, action: Copy }
