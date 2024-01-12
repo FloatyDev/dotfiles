@@ -1,4 +1,4 @@
---jkeymaps
+--keymaps
 local map = vim.keymap.set;
 
 map('i', 'jk', '<Esc>');
@@ -14,32 +14,33 @@ map('i', 'j<Tab>', function()
 end);
 
 -- themes
---vim.cmd("colorscheme dracula")
-local terminal_backround = "#1D2021";
-local linecursor_color = "#2e2927";
+-- 	old gruvbox
+--local terminal_backround = "#1D2021";
+--local linecursor_color = "#2e2927";
+--require('gruvbox').setup({
+--	overrides = {
+--		GruvboxRedSign = { bg = terminal_backround },
+--		GruvboxOrangeSign = { bg = terminal_backround },
+--		GruvboxYellowSign = { bg = terminal_backround },
+--		GruvboxBlueSign = { bg = terminal_backround },
+--		GruvboxAquaSign = { bg = terminal_backround },
+--		GruvboxGreenSign = { bg = terminal_backround },
+--		--cursor
+--		CursorLine = { bg = linecursor_color },
+--		CursorLineNr = { bg = linecursor_color },
+--		SignColumn = { bg = terminal_backround },
+--		--Split
+--		WinBarNC = { bg = terminal_backround },
+--		--Dashboard
+--		DashboardHeader = { fg = "#608B4E" },
+--		--GitSigns
+--		GitSignsChange = { fg = "#FE8019" },
+--	},
+--	contrast = "hard",
+--})
+
 vim.o.background = "dark" -- or "light" for light mode
-require('gruvbox').setup({
-	overrides = {
-		GruvboxRedSign = { bg = terminal_backround },
-		GruvboxOrangeSign = { bg = terminal_backround },
-		GruvboxYellowSign = { bg = terminal_backround },
-		GruvboxBlueSign = { bg = terminal_backround },
-		GruvboxAquaSign = { bg = terminal_backround },
-		GruvboxGreenSign = { bg = terminal_backround },
-		--cursor
-		CursorLine = { bg = linecursor_color },
-		CursorLineNr = { bg = linecursor_color },
-		SignColumn = { bg = terminal_backround },
-		--Split
-		WinBarNC = { bg = terminal_backround },
-		--Dashboard
-		DashboardHeader = { fg = "#608B4E" },
-		--GitSigns
-		GitSignsChange = { fg = "#FE8019" },
-	},
-	contrast = "hard",
-})
-vim.cmd("colorscheme gruvbox")
+vim.cmd("colorscheme gruvbox-material")
 
 -- options
 vim.opt.mouse = ""
