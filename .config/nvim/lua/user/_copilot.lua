@@ -4,23 +4,10 @@ require("copilot").setup({
 		auto_trigger = true,
 		keymap = { accept = "<C-j>" }
 	},
-	panel = {
-		enabled = true,
-		auto_refresh = false,
-		keymap = {
-			jump_prev = "[[",
-			jump_next = "]]",
-			accept = "<CR>",
-			refresh = "cr",
-			open = "<M-CR>",
-		},
-		layout = {
-			position = "bottom", --left,top,right
-			ratio = 0.4,
-		},
-	},
 	filetypes = {
 		markdown = "true",
-		help = "true"
+		help = "true",
+		python = "true",
+		lua = "true"
 	},
 })
