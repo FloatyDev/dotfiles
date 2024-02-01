@@ -44,6 +44,7 @@ vim.cmd("colorscheme gruvbox-material")
 
 -- options
 vim.opt.mouse = ""
+vim.opt.clipboard = "unnamedplus"
 vim.opt.showmode = false
 vim.opt.cursorline = true
 vim.opt.splitright = true
