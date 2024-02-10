@@ -104,6 +104,15 @@ require("lazy").setup({
 	},
 
 	{
+		'stevearc/oil.nvim',
+		config = function()
+			require("user._oil")
+		end,
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+	},
+
+	{
 		"michaelb/sniprun",
 		build = "sh ./install.sh",
 	},
