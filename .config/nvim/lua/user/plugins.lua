@@ -16,7 +16,10 @@ require("lazy").setup({
 	-- themes
 	"Mofiqul/dracula.nvim",
 
-	"ellisonleao/gruvbox.nvim",
+	--	"ellisonleao/gruvbox.nvim",
+
+	"sainnhe/gruvbox-material",
+
 	--editing
 	{
 		"windwp/nvim-autopairs",
@@ -73,16 +76,15 @@ require("lazy").setup({
 		end,
 	},
 	-- copilot_cmp
-	{
-		"zbirenbaum/copilot-cmp",
-		config = function()
-			require("copilot_cmp").setup()
-		end,
-		dependencies = {
-			"zbirenbaum/copilot.lua"
-		}
-
-	},
+	--{
+	--	"zbirenbaum/copilot-cmp",
+	--	config = function()
+	--		require("copilot_cmp").setup()
+	--	end,
+	--	dependencies = {
+	--		"zbirenbaum/copilot.lua"
+	--	}
+	--	},
 
 	-- git-neovim integration
 	{
@@ -99,6 +101,15 @@ require("lazy").setup({
 			require("user._tree")
 		end,
 		dependencies = { "kyazdani42/nvim-web-devicons" },
+	},
+
+	{
+		'stevearc/oil.nvim',
+		config = function()
+			require("user._oil")
+		end,
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 
 	{
@@ -138,16 +149,6 @@ require("lazy").setup({
 			require("user._lualine")
 		end,
 		dependencies = { "kyazdani42/nvim-web-devicons", }
-	},
-
-	{
-		"folke/drop.nvim",
-		event = "VimEnter",
-		config = function()
-			require("drop").setup({
-				theme = "xmas",
-			})
-		end,
 	},
 
 	{
