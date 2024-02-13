@@ -7,6 +7,7 @@ case $- in
     *i*) ;;
       *) return;;
 esac
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -99,8 +100,11 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
+alias matlab='~/Documents/Matlab/bin/matlab'
 alias icsvpn='sudo openvpn --config /etc/openvpn/client.ovpn'
-alias nvim='~/.config/nvim/nvim.appimage'
+alias nvim='/home/floaty/.local/share/bob/nvim-bin/nvim'
+alias nvim_config=bob
+alias dotfiles='/usr/bin/git --git-dir=/home/floaty/.dotfiles --work-tree=/home/floaty'
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
@@ -115,6 +119,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+. "$HOME/.cargo/env"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -148,8 +153,14 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+# Download completion bash file from https://github.com/tartansandal/conda-bash-completion 
+CONDA_ROOT=~/anaconda3   # <- set to your Anaconda/Miniconda installation directory
+if [[ -r $CONDA_ROOT/etc/profile.d/bash_completion.sh ]]; then
+    source $CONDA_ROOT/etc/profile.d/bash_completion.sh
+else
+    echo "WARNING: could not find conda-bash-completion setup script"
+fi
 
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
-export CUDA_HOME=/usr
