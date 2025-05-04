@@ -102,8 +102,8 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 alias matlab='~/Documents/Matlab/bin/matlab'
 alias icsvpn='sudo openvpn --config /etc/openvpn/client.ovpn'
-alias nvim='/home/floaty/.local/share/bob/nvim-bin/nvim'
-alias nvim_config=bob
+alias sshforth='ssh floaty@139.91.185.9'
+alias nvim='/home/floaty/.config/nvim/nvim-linux-x86_64.appimage'
 alias dotfiles='/usr/bin/git --git-dir=/home/floaty/.dotfiles --work-tree=/home/floaty'
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
