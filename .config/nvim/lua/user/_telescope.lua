@@ -1,7 +1,7 @@
 local builtin = require('telescope.builtin')
 
 vim.keymap.set('n', '<Space>s', builtin.find_files, {})
-vim.keymap.set('n', '<Space>g', builtin.live_grep, {})
+vim.keymap.set('n', '<Space>gr', builtin.live_grep, {})
 vim.keymap.set('n', '<Space>R', builtin.oldfiles, {})
 vim.keymap.set('n', '<Space>tr', builtin.treesitter, {})
 vim.keymap.set('n', '<Space>lr', builtin.lsp_references, {})

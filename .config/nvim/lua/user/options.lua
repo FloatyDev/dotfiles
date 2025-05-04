@@ -5,10 +5,10 @@ map('i', 'jk', '<Esc>');
 map('i', 'jj', '<Esc>');
 
 map('n', '<C-s>', ":w<CR>");
-map('n', '<C-q>', ":bd<CR>");
+map('n', '<C-q>', ":bd!<CR>");
 map('n', '<C-n>', ":bn<CR>");
 map('n', '<C-p>', ":bp<CR>");
-map('n', '<Space>d', ":Dashboard<CR>")
+map('n', '<Space>`', ":Dashboard<CR>")
 map('i', 'j<Tab>', function()
 	require("luasnip").jump(1)
 end);
@@ -43,7 +43,7 @@ vim.o.background = "dark" -- or "light" for light mode
 vim.cmd("colorscheme gruvbox-material")
 
 -- options
-vim.opt.mouse = ""
+vim.opt.mouse = "a"
 vim.opt.clipboard = "unnamedplus"
 vim.opt.showmode = false
 vim.opt.cursorline = true
@@ -59,6 +59,7 @@ vim.opt.number = true
 vim.opt.winbar = " "
 vim.opt.cmdheight = 0
 vim.opt.relativenumber = true
+vim.opt.termguicolors = true
 
 vim.cmd [[
 	augroup highlight_yank

@@ -43,7 +43,33 @@ require("lazy").setup({
 	"williamboman/mason-lspconfig.nvim",
 
 	'mfussenegger/nvim-jdtls',
-
+	--debug
+	--	{
+	--		"mfussenegger/"
+	--	},
+	--
+	--{
+	--	'rcarriga/nvim-dap-ui',
+	--	dependencies = 'mfussenegger/nvim-dap',
+	--	config = function()
+	--		require("user._dap_ui")
+	--	end,
+	--},
+	{
+		'mfussenegger/nvim-dap',
+		config = function()
+			require("user._dap")
+		end,
+	},
+	{
+		'mfussenegger/nvim-dap-python',
+		dependencies = {
+			'mfussenegger/nvim-dap',
+		},
+		config = function()
+			require("user._dap_python")
+		end,
+	},
 	--format
 	{
 		"stevearc/conform.nvim",
@@ -67,14 +93,14 @@ require("lazy").setup({
 	},
 
 	--copilot
-	{
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = function()
-			require("user._copilot")
-		end,
-	},
+	--{
+	--	"zbirenbaum/copilot.lua",
+	--	cmd = "Copilot",
+	--	event = "InsertEnter",
+	--	config = function()
+	--		require("user._copilot")
+	--	end,
+	--},
 	-- copilot_cmp
 	--{
 	--	"zbirenbaum/copilot-cmp",
@@ -116,15 +142,24 @@ require("lazy").setup({
 		"michaelb/sniprun",
 		build = "sh ./install.sh",
 	},
+	-- using packer.nvim
+	--{
+	--	'akinsho/bufferline.nvim',
+	--	tag = "*",
+	--	requires = 'nvim-tree/nvim-web-devicons',
+	--	config = function()
+	--		require("user._barbar")
+	--	end,
+	--},
 
-	{
-		"akinsho/bufferline.nvim",
-		config = function()
-			require("user._barbar")
-		end,
-		version = "v3.*",
-		dependencies = { "nvim-tree/nvim-web-devicons", name = 'tree_nvim_web_devicons' },
-	},
+	--{
+	--	"akinsho/bufferline.nvim",
+	--	config = function()
+	--		require("user._barbar")
+	--	end,
+	--	version = "v3.*",
+	--	dependencies = { "nvim-tree/nvim-web-devicons", name = 'tree_nvim_web_devicons' },
+	--},
 
 	{
 		"akinsho/toggleterm.nvim",
@@ -141,7 +176,7 @@ require("lazy").setup({
 		end,
 	},
 
-	{ "lukas-reineke/indent-blankline.nvim" },
+	--"lukas-reineke/indent-blankline.nvim",
 
 	{
 		"nvim-lualine/lualine.nvim",
