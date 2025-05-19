@@ -92,6 +92,16 @@ require("lazy").setup({
 		},
 	},
 
+	{
+		'akinsho/bufferline.nvim',
+		branch = "main",
+		dependencies = 'nvim-tree/nvim-web-devicons',
+		config = function()
+			require("user._bufferline")
+		end,
+		--config = require("_bufferline")
+	},
+
 	--copilot
 	--{
 	--	"zbirenbaum/copilot.lua",
@@ -183,7 +193,9 @@ require("lazy").setup({
 		config = function()
 			require("user._lualine")
 		end,
-		dependencies = { "kyazdani42/nvim-web-devicons", }
+		dependencies = {
+			"kyazdani42/nvim-web-devicons",
+		}
 	},
 
 	{
@@ -195,5 +207,7 @@ require("lazy").setup({
 		dependencies = { { 'nvim-tree/nvim-web-devicons', name = 'tree_nvim_web_devicons' } },
 	},
 
-	"onsails/lspkind-nvim",
+	{
+		"onsails/lspkind-nvim"
+	},
 })
