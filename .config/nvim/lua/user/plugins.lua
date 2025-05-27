@@ -208,6 +208,38 @@ require("lazy").setup({
 	},
 
 	{
-		"onsails/lspkind-nvim"
+		"onsails/lspkind-nvim",
 	},
+	{
+		"SmiteshP/nvim-navic",
+		dependencies = { "neovim/nvim-lspconfig" },
+		config = function()
+			require("user._nvim-navic")
+		end
+	},
+	{
+		"olimorris/codecompanion.nvim",
+		opts = {},
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-treesitter/nvim-treesitter",
+			"ravitemer/codecompanion-history.nvim"
+		},
+		config = function()
+			require("user._cc")
+		end,
+	},
+	{
+		"olimorris/codecompanion.nvim",
+		dependencies = {
+			"ravitemer/mcphub.nvim"
+		}
+	},
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		config = function()
+			require("user._copilot")
+		end
+	}
 })

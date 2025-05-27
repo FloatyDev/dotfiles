@@ -14,7 +14,9 @@ cmp.setup({
 		format = lspkind.cmp_format({
 			mode = "symbol",
 			maxwidth = 50,
-			symbol_map = { Copilot = "" }
+			symbol_map = { Copilot = "" },
+			ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+			show_labelDetails = true,
 		})
 	},
 	snippet = {

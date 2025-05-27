@@ -13,6 +13,32 @@ map('i', 'j<Tab>', function()
 	require("luasnip").jump(1)
 end);
 
+-- themes
+-- 	old gruvbox
+--local terminal_backround = "#1D2021";
+--local linecursor_color = "#2e2927";
+--require('gruvbox').setup({
+--	overrides = {
+--		GruvboxRedSign = { bg = terminal_backround },
+--		GruvboxOrangeSign = { bg = terminal_backround },
+--		GruvboxYellowSign = { bg = terminal_backround },
+--		GruvboxBlueSign = { bg = terminal_backround },
+--		GruvboxAquaSign = { bg = terminal_backround },
+--		GruvboxGreenSign = { bg = terminal_backround },
+--		--cursor
+--		CursorLine = { bg = linecursor_color },
+--		CursorLineNr = { bg = linecursor_color },
+--		SignColumn = { bg = terminal_backround },
+--		--Split
+--		WinBarNC = { bg = terminal_backround },
+--		--Dashboard
+--		DashboardHeader = { fg = "#608B4E" },
+--		--GitSigns
+--		GitSignsChange = { fg = "#FE8019" },
+--	},
+--	contrast = "hard",
+--})
+
 vim.o.background = "dark" -- or "light" for light mode
 vim.cmd("colorscheme gruvbox-material")
 
@@ -30,7 +56,7 @@ vim.opt.listchars = { trail = '·', tab = "  " }
 vim.opt.laststatus = 3
 vim.opt.signcolumn = 'yes'
 vim.opt.number = true
-vim.opt.winbar = ""
+vim.opt.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 vim.opt.cmdheight = 0
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
@@ -55,16 +81,15 @@ vim.api.nvim_create_autocmd({ "BufRead" }, {
 	group = id,
 	pattern = { "*" },
 	callback = function()
-		vim.api.nvim_create_autocmd({ "InsertEnter", "BufModifiedSet" }, {
-			buffer = 0,
-			once = true,
-			callback = function()
-				persistbuffer()
-			end
-		})
-	end
+		local once = true
+		local callback = function()
+			persistbuffer()
+		end
+		if once then
+			callback()
+		end
+	end,
 })
-
 vim.keymap.set('n', '<Space>b',
 	function()
 		local curbufnr = vim.api.nvim_get_current_buf()

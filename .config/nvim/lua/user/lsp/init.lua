@@ -11,7 +11,7 @@ local language_servers_installed = {
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap = true, silent = true }
-vim.keymap.set('n', '<space>l', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '<space>ld', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 --vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
@@ -22,7 +22,9 @@ local on_attach = function(client, bufnr)
 	client.server_capabilities.semanticTokensProvider = nil;
 	-- Enable completion triggered by <c-x><c-o>
 	vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
+	if client.server_capabilities.documenSymbolProvider then
+		require("nvim-navic").attach(client, bufnr)
+	end
 	-- Mappings.
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
@@ -47,5 +49,3 @@ for _, server in ipairs(language_servers_installed) do
 	require('lspconfig')[server].setup {
 		on_attach = on_attach, capabilities = require("cmp_nvim_lsp").default_capabilities(), }
 end
-
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
