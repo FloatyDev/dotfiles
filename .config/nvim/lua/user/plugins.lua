@@ -73,6 +73,7 @@ require("lazy").setup({
 	--format
 	{
 		"stevearc/conform.nvim",
+		event = { "BufReadPre", "BufNewFile"},
 		config = function()
 			require("user._conform")
 		end,

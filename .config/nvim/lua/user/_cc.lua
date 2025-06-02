@@ -58,18 +58,18 @@ require("codecompanion").setup({
 			return require("codecompanion.adapters").extend("deepseek", {
 				env = {
 					api_key = "sk-ecf839fd103d4a9e95030fe2e9581fc0",
-					--schema = {
-					--	model = {
-					--		default = "deepseek-chat",
-					--	},
-					--},
+					schema = {
+						model = {
+							default = "deepseek-chat"
+						}
+					},
 				},
 			})
 		end,
 	},
 	strategies = {
 		chat = {
-			adapter = "copilot",
+			adapter = "deepseek",
 		},
 		inline = {
 			adapter = "deepseek",

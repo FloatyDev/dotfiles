@@ -5,7 +5,7 @@ local language_servers_installed = {
 	"clangd",
 	"lua_ls",
 	"pyright",
-	"bashls"
+	"bashls",
 };
 
 -- Mappings.
@@ -42,7 +42,14 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
 	vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-	vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+	vim.keymap.set('n', '<space>f', function()
+		--vim.lsp.buf.format { async = true } end, bufopts
+		require("conform").format({
+			lsp_fallback = true,
+			async = false,
+			timeout_ms = 500,
+		})
+	end, bufopts)
 end
 
 for _, server in ipairs(language_servers_installed) do

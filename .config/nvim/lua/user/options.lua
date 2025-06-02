@@ -15,8 +15,7 @@ end);
 
 -- themes
 -- 	old gruvbox
---local terminal_backround = "#1D2021";
---local linecursor_color = "#2e2927";
+--local terminal_backround = "#1D2021"; local linecursor_color = "#2e2927";
 --require('gruvbox').setup({
 --	overrides = {
 --		GruvboxRedSign = { bg = terminal_backround },
