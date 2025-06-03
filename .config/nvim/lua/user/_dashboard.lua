@@ -41,7 +41,7 @@ local center = {
 	{
 		desc = "Find File",
 		keymap = "",
-		key = "f",
+		key = "s",
 		icon = "󰮗 ",
 		action = "Telescope find_files",
 	},
