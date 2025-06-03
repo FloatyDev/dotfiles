@@ -1,5 +1,5 @@
 vim.keymap.set({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "<LocalLeader>a", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<Space>a", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
 vim.keymap.set("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
 
 -- Expand 'cc' into 'CodeCompanionChat' in the command line
@@ -58,12 +58,14 @@ require("codecompanion").setup({
 			return require("codecompanion.adapters").extend("deepseek", {
 				env = {
 					api_key = "sk-ecf839fd103d4a9e95030fe2e9581fc0",
-					schema = {
-						model = {
-							default = "deepseek-chat"
-						}
-					},
 				},
+				schema = {
+					model = {
+						default = "deepseek-chat",
+						values = {"deepseek-chat","deepseek-reasoner"}
+					}
+				},
+
 			})
 		end,
 	},
