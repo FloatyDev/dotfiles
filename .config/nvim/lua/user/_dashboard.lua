@@ -109,6 +109,7 @@ vim.api.nvim_create_autocmd("Filetype", {
 require("dashboard").setup({
 	theme = "doom",
 	config = {
+		disable_winbar = false,
 		header = itadori,
 		center = center,
 		footer = function()
