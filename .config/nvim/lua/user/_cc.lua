@@ -7,6 +7,10 @@ vim.cmd([[cab cc CodeCompanionChat]])
 
 require("codecompanion").setup({
 	display = {
+		chat = {
+			auto_scroll = false,
+			show_settings = true
+		},
 		action_palette = {
 			width = 95,
 			height = 10,
@@ -62,7 +66,7 @@ require("codecompanion").setup({
 				schema = {
 					model = {
 						default = "deepseek-chat",
-						values = {"deepseek-chat","deepseek-reasoner"}
+						values = { "deepseek-chat", "deepseek-reasoner" }
 					}
 				},
 
@@ -72,6 +76,9 @@ require("codecompanion").setup({
 	strategies = {
 		chat = {
 			adapter = "deepseek",
+			opts = {
+				completion_provider = "cmp"
+			}
 		},
 		inline = {
 			adapter = "deepseek",

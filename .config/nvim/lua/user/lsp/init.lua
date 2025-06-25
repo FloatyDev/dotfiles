@@ -14,10 +14,13 @@ local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<space>ld', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-
+vim.diagnostic.config({
+	virtual_text = false,
+	signs = true,
+	underline = true
+})
 local on_attach = function(client, bufnr)
 	client.server_capabilities.semanticTokensProvider = nil
-
 	-- Enable completion triggered by <c-x><c-o>
 	vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
