@@ -164,3 +164,12 @@ fi
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
+
+export CUDA_HOME=/usr/local/cuda
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
+# Set DEEPSEEK_API_KEY from ~/.deepseek_api file if it exists
+if [ -f "$HOME/.deepseek_api_key" ]; then
+    export DEEPSEEK_API_KEY=$(cat "$HOME/.deepseek_api_key" | tr -d '[:space:]')
+fi

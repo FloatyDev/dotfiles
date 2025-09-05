@@ -41,6 +41,15 @@ end);
 vim.o.background = "dark" -- or "light" for light mode
 vim.cmd("colorscheme gruvbox-material")
 
+-- Custom navic highlights that match gruvbox-material
+vim.api.nvim_set_hl(0, 'NavicIconsFile', { link = 'GruvboxOrange' })
+vim.api.nvim_set_hl(0, 'NavicIconsModule', { link = 'GruvboxBlue' })
+vim.api.nvim_set_hl(0, 'NavicIconsNamespace', { link = 'GruvboxAqua' })
+vim.api.nvim_set_hl(0, 'NavicIconsClass', { link = 'GruvboxYellow' })
+vim.api.nvim_set_hl(0, 'NavicIconsMethod', { link = 'GruvboxGreen' })
+vim.api.nvim_set_hl(0, 'NavicText', { link = 'GruvboxFg1' })
+vim.api.nvim_set_hl(0, 'NavicSeparator', { link = 'GruvboxGray' })
+
 -- options
 vim.opt.mouse = "a"
 vim.opt.clipboard = "unnamedplus"
@@ -55,11 +64,24 @@ vim.opt.listchars = { trail = '·', tab = "  " }
 vim.opt.laststatus = 3
 vim.opt.signcolumn = 'yes'
 vim.opt.number = true
-vim.opt.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 vim.opt.cmdheight = 0
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
+vim.opt.title = true
+vim.opt.titlestring = "%<%F%=%l/%L - nvim"
 
+--nvim-navic fo winbar
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorMoved", "CursorMovedI" }, {
+  callback = function()
+    local navic = require("nvim-navic")
+    local location = navic.get_location()
+    if location and location ~= "" then
+      vim.opt_local.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
+    else
+      vim.opt_local.winbar = ""
+    end
+  end
+})
 vim.cmd [[
 	augroup highlight_yank
 	    autocmd!

@@ -1,5 +1,5 @@
 vim.keymap.set({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "<LocalLeader>a", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<Space>a", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
 vim.keymap.set("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
 
 -- Expand 'cc' into 'CodeCompanionChat' in the command line
@@ -7,6 +7,10 @@ vim.cmd([[cab cc CodeCompanionChat]])
 
 require("codecompanion").setup({
 	display = {
+		chat = {
+			auto_scroll = false,
+			show_settings = true
+		},
 		action_palette = {
 			width = 95,
 			height = 10,
@@ -58,13 +62,15 @@ require("codecompanion").setup({
 			deepseek = function()
 				return require("codecompanion.adapters").extend("deepseek", {
 					env = {
-						api_key = "sk-ecf839fd103d4a9e95030fe2e9581fc0",
-						schema = {
-							model = {
-								default = "deepseek-chat"
-							}
-						},
+						api_key = os.getenv("DEEPSEEK_API_KEY"),
 					},
+					schema = {
+						model = {
+							default = "deepseek-chat",
+							values = { "deepseek-chat", "deepseek-reasoner" }
+						}
+					},
+
 				})
 			end,
 		},
@@ -72,6 +78,9 @@ require("codecompanion").setup({
 	strategies = {
 		chat = {
 			adapter = "deepseek",
+			opts = {
+				completion_provider = "cmp"
+			}
 		},
 		inline = {
 			adapter = "deepseek",

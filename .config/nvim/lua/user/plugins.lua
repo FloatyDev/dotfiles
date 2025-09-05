@@ -153,25 +153,6 @@ require("lazy").setup({
 		"michaelb/sniprun",
 		build = "sh ./install.sh",
 	},
-	-- using packer.nvim
-	--{
-	--	'akinsho/bufferline.nvim',
-	--	tag = "*",
-	--	requires = 'nvim-tree/nvim-web-devicons',
-	--	config = function()
-	--		require("user._barbar")
-	--	end,
-	--},
-
-	--{
-	--	"akinsho/bufferline.nvim",
-	--	config = function()
-	--		require("user._barbar")
-	--	end,
-	--	version = "v3.*",
-	--	dependencies = { "nvim-tree/nvim-web-devicons", name = 'tree_nvim_web_devicons' },
-	--},
-
 	{
 		"akinsho/toggleterm.nvim",
 		config = function()
