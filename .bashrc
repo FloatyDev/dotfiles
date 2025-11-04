@@ -105,6 +105,8 @@ alias icsvpn='sudo openvpn --config /etc/openvpn/client/client.ovpn'
 alias sshforth='ssh floaty@139.91.185.82'
 alias nvim='/home/floaty/.config/nvim/nvim-linux-x86_64.appimage'
 alias dotfiles='/usr/bin/git --git-dir=/home/floaty/.dotfiles --work-tree=/home/floaty'
+alias smicro='ssh -p 2234 sygkelakis@139.91.90.47'
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
