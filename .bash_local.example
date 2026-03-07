@@ -1,0 +1,47 @@
+# ~/.bash_local — machine-specific shell config
+#
+# This file is sourced by ~/.bashrc but is NEVER tracked in the dotfiles repo.
+# Copy this template to ~/.bash_local on each machine and fill in the values.
+#
+#   cp ~/.bash_local.example ~/.bash_local
+#
+
+# ─── SSH aliases ──────────────────────────────────────────────────────────────
+# alias sshforth='ssh <user>@<ip>'
+# alias smicro='ssh -p <port> <user>@<ip>'
+
+# ─── VPN ──────────────────────────────────────────────────────────────────────
+# alias icsvpn='sudo openvpn --config /etc/openvpn/client/client.ovpn'
+
+# ─── API keys (never commit these) ───────────────────────────────────────────
+# Load from a separate key file so the key itself isn't even in this file.
+# [ -f "$HOME/.deepseek_api_key" ] && \
+#     export DEEPSEEK_API_KEY=$(cat "$HOME/.deepseek_api_key" | tr -d '[:space:]')
+
+# ─── Conda ────────────────────────────────────────────────────────────────────
+# Only present on machines where Anaconda/Miniconda is installed.
+#
+# __conda_setup="$("$HOME/anaconda3/bin/conda" 'shell.bash' 'hook' 2>/dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     [ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ] \
+#         && . "$HOME/anaconda3/etc/profile.d/conda.sh" \
+#         || export PATH="$HOME/anaconda3/bin:$PATH"
+# fi
+# unset __conda_setup
+#
+# CONDA_ROOT="$HOME/anaconda3"
+# if [[ -r "$CONDA_ROOT/etc/profile.d/bash_completion.sh" ]]; then
+#     source "$CONDA_ROOT/etc/profile.d/bash_completion.sh"
+# fi
+
+# ─── pyenv ────────────────────────────────────────────────────────────────────
+# export PYENV_ROOT="$HOME/.pyenv"
+# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+# eval "$(pyenv init -)"
+
+# ─── CUDA ─────────────────────────────────────────────────────────────────────
+# export CUDA_HOME=/usr/local/cuda
+# export PATH="$CUDA_HOME/bin:$PATH"
+# export LD_LIBRARY_PATH="$CUDA_HOME/lib64:$LD_LIBRARY_PATH"
