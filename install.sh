@@ -239,19 +239,51 @@ install_neovim() {
         warn "Found Neovim $ver — upgrading to latest stable"
     fi
 
+	local appimage_tmp="/tmp/nvim.appimage"
+    local extract_dir="$HOME/.local/share/nvim-appimage"
+
     log "Downloading latest stable Neovim..."
-    run mkdir -p "$HOME/.local/bin"
-    run curl -fLo "$NVIM_BIN" "$NVIM_RELEASE_URL"
-    run chmod +x "$NVIM_BIN"
+    mkdir -p "$HOME/.local/bin"
+    curl -fLo "$appimage_tmp" "$NVIM_RELEASE_URL" >> "$LOG_FILE" 2>&1
+    chmod +x "$appimage_tmp"
 
-    if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-        warn "~/.local/bin not in PATH yet — will be fixed after 'source ~/.bashrc'"
-    fi
-
-    if [[ "$DRY_RUN" == false ]]; then
-        ok "Installed: $("$NVIM_BIN" --version | head -1)"
+    if "$appimage_tmp" --version &>/dev/null 2>&1; then
+        # FUSE available — run AppImage directly
+        mv "$appimage_tmp" "$NVIM_BIN"
+        ok "Installed as AppImage: $("$NVIM_BIN" --version | head -1)"
     else
-        ok "Would install latest Neovim to $NVIM_BIN"
+        # No FUSE (Docker/CI) — extract and wrap
+        log "FUSE not available — extracting AppImage..."
+        rm -rf "$extract_dir" /tmp/squashfs-root
+
+        # --appimage-extract always creates ./squashfs-root relative to CWD
+        # We cd to /tmp, extract there, then move squashfs-root to extract_dir
+        # so the final layout is $extract_dir/AppRun (not $extract_dir/squashfs-root/AppRun)
+        (cd /tmp && "$appimage_tmp" --appimage-extract >> "$LOG_FILE" 2>&1)
+
+        if [[ ! -f /tmp/squashfs-root/AppRun ]]; then
+            error "AppImage extraction failed — AppRun not found in /tmp/squashfs-root"
+            exit 1
+        fi
+
+        # Move squashfs-root itself to become extract_dir
+        mv /tmp/squashfs-root "$extract_dir"
+        rm -f "$appimage_tmp"
+
+        cat > "$NVIM_BIN" << WRAPPER
+#!/bin/bash
+exec "$extract_dir/AppRun" "\$@"
+WRAPPER
+        chmod +x "$NVIM_BIN"
+
+        local ver
+        ver=$("$NVIM_BIN" --version 2>&1 | head -1)
+        if echo "$ver" | grep -q "^NVIM"; then
+            ok "Installed (extracted): $ver"
+        else
+            error "Neovim wrapper failed to run: $ver"
+            exit 1
+        fi
     fi
 }
 
