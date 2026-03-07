@@ -188,7 +188,7 @@ install_deps() {
     fi
 }
 
-# ─── Neovim ───────────────────────────────────────────────────────────────────
+# # ─── Neovim ───────────────────────────────────────────────────────────────────
 install_neovim() {
     section "Neovim"
 
@@ -210,22 +210,55 @@ install_neovim() {
         warn "Found Neovim $ver — upgrading to latest stable (0.11+)"
     fi
 
-    log "Downloading latest stable Neovim..."
+    # Detect if FUSE is unavailable (Docker, CI, minimal containers)
+    _has_fuse() {
+        [ -f /.dockerenv ] && return 1          # inside Docker
+        command_exists fusermount && return 0   # fuse available
+        return 1
+    }
+
     run mkdir -p "$HOME/.local/bin"
-    run curl -fLo "$NVIM_BIN" "$NVIM_RELEASE_URL"
-    run chmod +x "$NVIM_BIN"
+
+    if _has_fuse; then
+        # ── AppImage path (normal Linux desktop) ──────────────────────────
+        log "Downloading latest stable Neovim (AppImage)..."
+        run curl -fLo "$NVIM_BIN" \
+            "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage"
+        run chmod +x "$NVIM_BIN"
+    else
+        # ── Tarball path (Docker / no FUSE) ───────────────────────────────
+        log "FUSE unavailable — using tarball install..."
+        local tmp_tar="/tmp/nvim-linux-x86_64.tar.gz"
+
+        run curl -fLo "$tmp_tar" \
+            "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
+
+        # Extract only the binary — no need to pollute /usr/local
+        if [[ "$DRY_RUN" == false ]]; then
+            tar -xzf "$tmp_tar" -C /tmp
+            cp /tmp/nvim-linux-x86_64/bin/nvim "$NVIM_BIN"
+            chmod +x "$NVIM_BIN"
+            rm -rf "$tmp_tar" /tmp/nvim-linux-x86_64
+        fi
+    fi
 
     if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
         warn "~/.local/bin not in PATH yet — will be fixed after 'source ~/.bashrc'"
     fi
 
-    if [[ "$DRY_RUN" == false ]]; then
+    # ── Verify the install actually worked ────────────────────────────────
+    if [[ "$DRY_RUN" == true ]]; then
+        ok "Would install Neovim to $NVIM_BIN"
+        return 0
+    fi
+
+    if [[ -x "$NVIM_BIN" ]]; then
         ok "Installed: $("$NVIM_BIN" --version | head -1)"
     else
-        ok "Would install Neovim to $NVIM_BIN"
+        error "Neovim binary not found at $NVIM_BIN — install failed"
+        return 1
     fi
 }
-
 # ─── Bare repo ────────────────────────────────────────────────────────────────
 setup_bare_repo() {
     section "Dotfiles Bare Repo"
