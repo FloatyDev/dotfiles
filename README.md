@@ -20,7 +20,7 @@ with a bare git repository so every file lives at its real path with no symlinks
 ## Fresh install on a new machine
 
 ```bash
-git clone git@github.com:<you>/dotfiles.git ~/dotfiles
+git clone git@github.com:FloatyDev/dotfiles.git ~/dotfiles
 cd ~/dotfiles && bash install.sh
 ```
 
