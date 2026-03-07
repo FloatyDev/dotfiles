@@ -30,6 +30,18 @@ NVIM_BIN="$HOME/.local/bin/nvim"
 DRY_RUN=false
 INSTALL_DEPS=true
 INSTALL_NVIM=true
+_SHIM_CREATED=0
+
+if ! command -v sudo &>/dev/null; then
+    if [ "$(id -u)" -eq 0 ]; then
+        printf '#!/bin/sh\nexec "$@"\n' > /usr/local/bin/sudo
+        chmod +x /usr/local/bin/sudo
+        _SHIM_CREATED=1
+    else
+        echo "[ERROR] No sudo and not root."
+        exit 1
+    fi
+fi
 
 for arg in "$@"; do
     case $arg in
@@ -261,8 +273,21 @@ checkout_files() {
             safe_backup "$HOME/$file"
         done <<< "$conflicts"
     fi
-
-    dotfiles checkout
+	# Handle untracked files in the work tree that would block checkout
+	local untracked
+	untracked=$(dotfiles checkout 2>&1 \
+	    | grep "would be overwritten" -A 100 \
+	    | grep -E "^\s+" \
+	    | awk '{print $1}' || true)
+	
+	if [[ -n "$untracked" ]]; then
+	    warn "Untracked files blocking checkout — backing up:"
+	    while IFS= read -r file; do
+	        [[ -z "$file" ]] && continue
+	        safe_backup "$HOME/$file"
+	    done <<< "$untracked"
+	fi
+    dotfiles checkout --force
     ok "Config files in place"
 }
 
@@ -354,3 +379,7 @@ main() {
 }
 
 main "$@"
+
+if [ "$_SHIM_CREATED" -eq 1 ]; then
+    rm -f /usr/local/bin/sudo
+fi
