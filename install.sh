@@ -30,6 +30,7 @@ NVIM_BIN="$HOME/.local/bin/nvim"
 DRY_RUN=false
 INSTALL_DEPS=true
 INSTALL_NVIM=true
+FORCE_HTTPS=false
 
 for arg in "$@"; do
     case $arg in
@@ -98,6 +99,20 @@ safe_backup() {
     warn "Backed up: ~/$rel  →  $BACKUP_DIR/$rel"
 }
 
+apt_install() {
+    if command_exists sudo; then
+        sudo apt-get "$@"
+    else
+        apt-get "$@"
+    fi
+}
+
+# Converts SSH remote URL to HTTPS
+# git@github.com:user/repo.git  →  https://github.com/user/repo.git
+ssh_to_https() {
+    echo "$1" | sed 's|git@\(.*\):\(.*\)|https://\1/\2|'
+}
+
 dotfiles() {
     /usr/bin/git --git-dir="$DOTFILES_DIR" --work-tree="$HOME" "$@"
 }
@@ -109,7 +124,14 @@ dotfiles() {
 get_repo_url() {
     local script_dir
     script_dir="$(cd "$(dirname "$0")" && pwd)"
-    git -C "$script_dir" remote get-url origin 2>/dev/null || true
+    local url
+    url=$(git -C "$script_dir" remote get-url origin 2>/dev/null || true)
+
+    if [[ "$FORCE_HTTPS" == true ]]; then
+        url=$(ssh_to_https "$url")
+    fi
+
+    echo "$url"
 }
 
 # ─── Guard: must run from inside the cloned repo ──────────────────────────────
@@ -171,7 +193,7 @@ install_deps() {
     )
 
     log "Updating apt..."
-    run sudo apt-get update -qq
+    run apt_install update -qq
 
     local to_install=()
     for pkg in "${packages[@]}"; do
@@ -182,7 +204,7 @@ install_deps() {
 
     if [[ ${#to_install[@]} -gt 0 ]]; then
         log "Installing: ${to_install[*]}"
-        run sudo apt-get install -y "${to_install[@]}"
+		run apt_install install -y "${to_install[@]}"
         ok "Packages installed"
     else
         ok "All packages already present"
