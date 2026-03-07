@@ -221,12 +221,10 @@ install_deps() {
 # ─── Neovim ───────────────────────────────────────────────────────────────────
 install_neovim() {
     section "Neovim"
-
     if [[ "$INSTALL_NVIM" == false ]]; then
         warn "Skipping (--no-nvim)"
         return 0
     fi
-
     if command_exists nvim; then
         local ver major minor
         ver=$(nvim --version 2>/dev/null | head -1 | grep -oP '\d+\.\d+' | head -1 || echo "0.0")
@@ -238,44 +236,34 @@ install_neovim() {
         fi
         warn "Found Neovim $ver — upgrading to latest stable"
     fi
-
-	local appimage_tmp="/tmp/nvim.appimage"
+    local appimage_tmp="/tmp/nvim.appimage"
     local extract_dir="$HOME/.local/share/nvim-appimage"
-
     log "Downloading latest stable Neovim..."
     mkdir -p "$HOME/.local/bin"
     curl -fLo "$appimage_tmp" "$NVIM_RELEASE_URL" >> "$LOG_FILE" 2>&1
     chmod +x "$appimage_tmp"
-
     if "$appimage_tmp" --version &>/dev/null 2>&1; then
         # FUSE available — run AppImage directly
         mv "$appimage_tmp" "$NVIM_BIN"
         ok "Installed as AppImage: $("$NVIM_BIN" --version | head -1)"
     else
-        # No FUSE (Docker/CI) — extract and wrap
+        # No FUSE (Docker/CI) — extract per official neovim docs:
+        # https://github.com/neovim/neovim/blob/master/INSTALL.md
         log "FUSE not available — extracting AppImage..."
         rm -rf "$extract_dir" /tmp/squashfs-root
-
-        # --appimage-extract always creates ./squashfs-root relative to CWD
-        # We cd to /tmp, extract there, then move squashfs-root to extract_dir
-        # so the final layout is $extract_dir/AppRun (not $extract_dir/squashfs-root/AppRun)
         (cd /tmp && "$appimage_tmp" --appimage-extract >> "$LOG_FILE" 2>&1)
-
-        if [[ ! -f /tmp/squashfs-root/AppRun ]]; then
-            error "AppImage extraction failed — AppRun not found in /tmp/squashfs-root"
+        if [[ ! -f /tmp/squashfs-root/usr/bin/nvim ]]; then
+            error "AppImage extraction failed — usr/bin/nvim not found"
             exit 1
         fi
-
-        # Move squashfs-root itself to become extract_dir
         mv /tmp/squashfs-root "$extract_dir"
         rm -f "$appimage_tmp"
-
+        # Call the binary directly — AppRun breaks child process spawning
         cat > "$NVIM_BIN" << WRAPPER
 #!/bin/bash
-exec "$extract_dir/AppRun" "\$@"
+exec "$extract_dir/usr/bin/nvim" "\$@"
 WRAPPER
         chmod +x "$NVIM_BIN"
-
         local ver
         ver=$("$NVIM_BIN" --version 2>&1 | head -1)
         if echo "$ver" | grep -q "^NVIM"; then
@@ -286,7 +274,6 @@ WRAPPER
         fi
     fi
 }
-
 # ─── Bare repo setup ──────────────────────────────────────────────────────────
 setup_bare_repo() {
     section "Dotfiles Bare Repo"
