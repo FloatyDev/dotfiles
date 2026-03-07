@@ -1,5 +1,36 @@
+# ~/.gitignore
+# Used by the dotfiles bare repo (work tree = $HOME).
+# Configured via: dotfiles config --local core.excludesFile "$HOME/.gitignore"
+
+# ─── Machine-specific shell config (never commit) ────────────────────────────
 .bash_local
-.deepseek_api_key
+
+# ─── Secrets (never commit) ───────────────────────────────────────────────────
 *_api_key
+*_api_secret
+.env
+.deepseek_api_key
+
+# ─── Python ───────────────────────────────────────────────────────────────────
 *.pyc
+*.pyo
 __pycache__/
+
+# ─── Neovim runtime artifacts ─────────────────────────────────────────────────
+# Plugin cache — managed by lazy.nvim, no need to track
+.local/share/nvim/lazy/
+.local/share/nvim/mason/
+.local/share/nvim/shada/
+
+# Uncomment to stop tracking plugin lock file (allows each machine to use latest):
+# .config/nvim/lazy-lock.json
+
+# ─── OS noise ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.Trash-*/
+
+# ─── Editor swap/backup files ─────────────────────────────────────────────────
+*.swp
+*.swo
+*~
