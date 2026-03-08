@@ -1,4 +1,3 @@
-live_config_reload = true
 
 [colors]
 draw_bold_text_with_bright_colors = true
@@ -112,3 +111,6 @@ binding = { key = "Return", mods = "Control" }
 
 # mouse binding: Ctrl+hover underline & click
 mouse   = { mods = "Control", enabled = true }
+
+[general]
+live_config_reload = true
