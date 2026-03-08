@@ -52,6 +52,8 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # ─── Common aliases ───────────────────────────────────────────────────────────
+# Capture TTY for osc52copy clipboard provider used inside nvim
+export NVIM_TTY=$(tty)
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'

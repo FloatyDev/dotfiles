@@ -51,7 +51,7 @@ vim.api.nvim_set_hl(0, 'NavicText', { link = 'GruvboxFg1' })
 vim.api.nvim_set_hl(0, 'NavicSeparator', { link = 'GruvboxGray' })
 
 -- options
--- OSC 52 clipboard provider — works over SSH with no display server
+
 vim.g.clipboard = {
     name = "osc52",
     copy = {
