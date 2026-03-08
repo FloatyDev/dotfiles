@@ -4,5 +4,5 @@ if [ -n "$TMUX" ]; then
     tty=$(tmux list-clients -F '#{client_tty}' | head -1)
     printf "\033]52;c;%s\a" "$buf" > "$tty"
 else
-    printf "\033]52;c;%s\a" "$buf"
+	printf "\033]52;c;%s\a" "$buf" > /dev/tty
 fi
