@@ -1,4 +1,4 @@
-
+live_config_reload = true
 [colors]
 draw_bold_text_with_bright_colors = true
 
@@ -26,12 +26,18 @@ magenta = "#d3869b"
 cyan    = "#8ec07c"
 white   = "#ebdbb2"
 
+[terminal]
+osc52 = "CopyPaste"  # enables OSC 52 clipboard we just set up
+
 [cursor]
-style = "Block"
+style = { shape = "Block", blinking = "On" }
+blink_interval = 750
+blink_timeout = 10
 unfocused_hollow = true
 
 [font]
 size = 10.0
+builtin_box_drawing = true  # uses FiraCode's box drawing chars for tmux borders
 
 [font.normal]
 family = "FiraCode Nerd Font Mono"
@@ -55,9 +61,11 @@ y = 0
 
 [keyboard]
 bindings = [
-  { key = "V", mods = "Control|Shift", action = "Paste" },
-  { key = "C", mods = "Control|Shift", action = "Copy" }
-]
+   	{ key = "V", mods = "Control|Shift", action = "Paste" },
+   	{ key = "C", mods = "Control|Shift", action = "Copy" },
+  	{ key = "Return", mods = "Alt", action = "ToggleFullscreen" },
+  	{ key = "N", mods = "Control|Shift", action = "SpawnNewInstance" },
+ ]
 
 [mouse]
 hide_when_typing = true
@@ -82,12 +90,15 @@ action = "PasteSelection"
 
 [scrolling]
 history = 10000
+multiplier = 5  # lines scrolled per scroll event, default is 3
 
 [window]
 decorations = "none"
 dynamic_padding = true
 opacity = 0.93
 startup_mode = "Windowed"
+title = "Alacritty"
+dynamic_title = true
 
 [window.dimensions]
 columns = 120
@@ -100,17 +111,10 @@ y = 0
 [[hints.enabled]]
 regex = '(magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-\u009F<>"\\s{-}\\^⟨⟩`]+'
 
-# what to do with the matched text; {} is replaced by the URL
 command = "xdg-open {}"
 
-# tidy up the match (e.g. strip trailing punctuation)
 post_processing = true
-
-# keyboard binding: Ctrl+Enter
-binding = { key = "Return", mods = "Control" }
 
 # mouse binding: Ctrl+hover underline & click
 mouse   = { mods = "Control", enabled = true }
 
-[general]
-live_config_reload = true
