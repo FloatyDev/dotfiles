@@ -12,6 +12,7 @@ with a bare git repository so every file lives at its real path with no symlinks
 | `.bashrc` | Portable shell config and aliases |
 | `.bash_local.example` | Template for machine-specific config |
 | `.tmux.conf` | tmux keybindings and status bar |
+| `.local/bin/osc52copy`    | OSC 52 clipboard provider           |
 | `.gitignore` | Bare repo ignore rules |
 | `install.sh` | Bootstrap script |
 
@@ -169,6 +170,32 @@ curl https://sh.rustup.rs -sSf -o /tmp/rustup-init.sh
 sh /tmp/rustup-init.sh -y --no-modify-path
 source "$HOME/.cargo/env"
 cargo install tree-sitter-cli
+```
+
+### Clipboard not working over SSH (Docker/remote containers)
+
+`xclip` and `xsel` require a display server which is never available in a
+headless Docker container. Instead, clipboard is handled via OSC 52 — a
+terminal escape sequence that tunnels clipboard data back through the SSH
+connection to your local terminal.
+
+Requirements:
+- Local terminal must be Alacritty 0.12+ (OSC 52 support was added in 0.12)
+  approach in `osc52copy` (already handled by the script)
+
+The script at `~/.local/bin/osc52copy` handles both cases automatically:
+- Inside tmux: writes the escape sequence directly to the client TTY,
+  bypassing tmux's interception entirely (works on tmux 3.2a and older)
+- Outside tmux: writes the sequence directly to stdout
+
+Paste is one-directional — you can yank in nvim and paste locally, but
+you cannot paste from local clipboard into nvim over OSC 52. For that,
+use tmux's `Ctrl+Space ]` paste or the terminal's `Ctrl+Shift+V`.
+
+If you see `E475: Invalid value for argument cmd: 'osc52copy' is not executable`:
+```bash
+chmod +x ~/.local/bin/osc52copy
+source ~/.bashrc   # ensures ~/.local/bin is in PATH
 ```
 ---
 
