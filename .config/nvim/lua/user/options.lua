@@ -51,19 +51,24 @@ vim.api.nvim_set_hl(0, 'NavicText', { link = 'GruvboxFg1' })
 vim.api.nvim_set_hl(0, 'NavicSeparator', { link = 'GruvboxGray' })
 
 -- options
-
-vim.g.clipboard = {
-    name = "osc52",
-    copy = {
-        ["+"] = { "osc52copy" },
-        ["*"] = { "osc52copy" },
-    },
-    paste = {
-        ["+"] = { "true" },  -- paste not possible over OSC 52
-        ["*"] = { "true" },
-    },
-    cache_enabled = true,
-}
+-- Use xclip if available (local machine with display server),
+-- fall back to OSC 52 for SSH/Docker environments with no display.
+if vim.fn.executable("xclip") == 1 then
+    vim.opt.clipboard = "unnamedplus"  -- xclip handles it automatically
+else
+    vim.g.clipboard = {
+        name = "osc52",
+        copy = {
+            ["+"] = { "osc52copy" },
+            ["*"] = { "osc52copy" },
+        },
+        paste = {
+            ["+"] = { "true" },
+            ["*"] = { "true" },
+        },
+        cache_enabled = true,
+    }
+end
 
 vim.opt.mouse = "a"
 vim.opt.clipboard = "unnamedplus"
