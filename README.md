@@ -138,7 +138,38 @@ this manually, back up the conflicting files and run:
 source ~/.bashrc
 ```
 The alias is defined in `.bashrc` and only available after sourcing it.
+### Treesitter parsers fail to install: `tree-sitter build` not recognized or CLI missing
 
+This version of `nvim-treesitter` uses the `tree-sitter` CLI to compile parsers
+rather than calling `gcc` directly. If the CLI is missing or too old, `:TSInstall`
+will freeze or fail with `The subcommand 'build' wasn't recognized`.
+
+The install script handles this automatically, but if it fails verify manually:
+
+```bash
+tree-sitter --version   # must be >= 0.22.x
+```
+
+If missing or wrong version, the cause depends on your system glibc:
+
+```bash
+ldd --version | head -1   # Ubuntu 22.04 = glibc 2.35, Ubuntu 24.04 = glibc 2.39
+```
+
+**Ubuntu 24.04 (glibc 2.39+)** — npm binary works:
+```bash
+npm install -g tree-sitter-cli
+```
+
+**Ubuntu 22.04 (glibc 2.35)** — npm binary requires a newer glibc and will crash;
+compile from source instead:
+```bash
+apt-get install -y libclang-dev
+curl https://sh.rustup.rs -sSf -o /tmp/rustup-init.sh
+sh /tmp/rustup-init.sh -y --no-modify-path
+source "$HOME/.cargo/env"
+cargo install tree-sitter-cli
+```
 ---
 
 ## Requirements

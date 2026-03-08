@@ -384,6 +384,43 @@ post_install() {
         run npm install -g mcp-hub@latest \
             || warn "mcp-hub failed — mcphub.nvim will use bundled binary"
         ok "mcp-hub installed"
+	log "Installing tree-sitter-cli (required by nvim-treesitter to compile parsers)..."
+        run npm install -g tree-sitter-cli \
+            || warn "tree-sitter-cli npm install failed — will try cargo"
+
+        # The npm binary is compiled against a recent glibc. On older systems
+        # (Ubuntu 22.04 = glibc 2.35) the prebuilt binary fails with a glibc
+        # version error. In that case fall back to compiling from source.
+        if ! tree-sitter --version &>/dev/null 2>&1; then
+            warn "npm tree-sitter binary incompatible with system glibc — building from source via cargo"
+	    if ! command_exists cargo; then
+                log "Installing Rust toolchain..."
+                run curl https://sh.rustup.rs -sSf -o /tmp/rustup-init.sh
+                run sh /tmp/rustup-init.sh -y --no-modify-path
+                rm -f /tmp/rustup-init.sh
+                # source must run in the current shell — not wrapped in run()
+                [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env" \
+                    || export PATH="$HOME/.cargo/bin:$PATH"
+            fi
+
+            # libclang is required by rquickjs-sys which tree-sitter-cli depends on
+            if command_exists apt-get; then
+                log "Installing libclang-dev (required to compile tree-sitter-cli)..."
+                run apt_install install -y libclang-dev
+            fi
+            run cargo install tree-sitter-cli \
+                || warn "cargo tree-sitter-cli failed — run manually: cargo install tree-sitter-cli"
+        fi
+
+		hash -r 2>/dev/null || true
+
+        if tree-sitter --version &>/dev/null 2>&1; then
+            ok "tree-sitter-cli ready: $(tree-sitter --version)"
+        else
+            warn "tree-sitter-cli could not be verified in this shell session."
+            warn "If 'tree-sitter --version' works in a new shell, you're fine."
+            warn "If not, install manually: cargo install tree-sitter-cli"
+        fi
     else
         warn "npm not found — skipping mcp-hub"
     fi
