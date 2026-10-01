@@ -16,7 +16,6 @@ end
 
 require("jdtls").start_or_attach({
     cmd = { env.paths.jdtls_bin },
-    root_dir = vim.fs.dirname(
-        vim.fs.find({ "gradlew", ".git", "mvnw" }, { upward = true })[1]
-    ),
+	root_dir = vim.fs.root(0, { "gradlew", ".git", "mvnw", "pom.xml", "build.gradle" })
+		or vim.fn.getcwd(),
 })

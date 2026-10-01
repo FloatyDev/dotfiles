@@ -1,11 +1,3 @@
--- Set up winbar to show navic
-
-vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufEnter" }, {
-	callback = function()
-		vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
-	end
-})
-
 require("nvim-navic").setup({
 	icons = {
 		File          = "󰈙 ", -- File icon that works universally
@@ -39,4 +31,5 @@ require("nvim-navic").setup({
 	separator = " > ",
 	depth_limit = 0,
 	depth_limit_indicator = "..",
+	lazy_update_context = true,
 })

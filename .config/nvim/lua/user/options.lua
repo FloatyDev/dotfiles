@@ -1,6 +1,9 @@
 --keymaps
 local map = vim.keymap.set;
 
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 map('i', 'jk', '<Esc>');
 map('i', 'jj', '<Esc>');
 
@@ -53,21 +56,11 @@ vim.api.nvim_set_hl(0, 'NavicSeparator', { link = 'GruvboxGray' })
 -- options
 -- Use xclip if available (local machine with display server),
 -- fall back to OSC 52 for SSH/Docker environments with no display.
+
 if vim.fn.executable("xclip") == 1 then
-    vim.opt.clipboard = "unnamedplus"  -- xclip handles it automatically
+	vim.opt.clipboard = "unnamedplus"
 else
-    vim.g.clipboard = {
-        name = "osc52",
-        copy = {
-            ["+"] = { "osc52copy" },
-            ["*"] = { "osc52copy" },
-        },
-        paste = {
-            ["+"] = { "true" },
-            ["*"] = { "true" },
-        },
-        cache_enabled = true,
-    }
+	vim.g.clipboard = "osc52"
 end
 
 vim.opt.mouse = "a"
@@ -86,6 +79,7 @@ vim.opt.number = true
 vim.opt.cmdheight = 0
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
+vim.opt.winborder = "single"
 vim.opt.title = true
 vim.opt.titlestring = "%<%F%=%l/%L - nvim"
 
@@ -101,22 +95,11 @@ local id = vim.api.nvim_create_augroup("startup", {
 	clear = false
 })
 
-local persistbuffer = function(bufnr)
-	bufnr = bufnr or vim.api.nvim_get_current_buf()
-	vim.fn.setbufvar(bufnr, 'bufpersist', 1)
-end
-
 vim.api.nvim_create_autocmd({ "BufRead" }, {
 	group = id,
 	pattern = { "*" },
-	callback = function()
-		local once = true
-		local callback = function()
-			persistbuffer()
-		end
-		if once then
-			callback()
-		end
+	callback = function(args)
+		vim.b[args.buf].bufpersist = 1
 	end,
 })
 vim.keymap.set('n', '<Space>b',

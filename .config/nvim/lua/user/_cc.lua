@@ -1,12 +1,14 @@
-vim.keymap.set({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "<Space>a", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
-vim.keymap.set("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
-
 -- Expand 'cc' into 'CodeCompanionChat' in the command line
 vim.cmd([[cab cc CodeCompanionChat]])
 
 require("codecompanion").setup({
 	display = {
+		cli = {
+			window = {
+				layout = "vertical",
+				width = 0.4,
+			},
+		},
 		action_palette = {
 			width = 95,
 			height = 10,
@@ -54,30 +56,38 @@ require("codecompanion").setup({
 		}
 	},
 	adapters = {
-		deepseek = function()
-			return require("codecompanion.adapters").extend("deepseek", {
-				env = {
-					api_key = os.getenv("DEEPSEEK_API_KEY"),
-				},
-				schema = {
-					model = {
-						default = "deepseek-chat",
-						values = { "deepseek-chat", "deepseek-reasoner" }
-					}
-				},
-
-			})
-		end,
+		http = {
+			deepseek = function()
+				return require("codecompanion.adapters").extend("deepseek", {
+					env = {
+						api_key = "DEEPSEEK_API_KEY",
+					},
+					schema = {
+						model = {
+							default = "deepseek-chat",
+							values = { "deepseek-chat", "deepseek-reasoner" },
+						},
+					},
+				})
+			end,
+		},
 	},
-	strategies = {
+	interactions = {
 		chat = {
 			adapter = "deepseek",
 		},
 		inline = {
 			adapter = "deepseek",
 		},
-		agent = {
-			adapter = "deepseek",
+		cli = {
+			agent = "codex",
+			agents = {
+				codex = {
+					cmd = "codex",
+					args = {},
+					description = "OpenAI Codex CLI",
+				},
+			},
 		},
 	},
 })

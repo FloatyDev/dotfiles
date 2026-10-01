@@ -1,4 +1,3 @@
-require("user.lsp.mason")
 require("user.lsp.handlers")
 
 local language_servers_installed = {
@@ -9,59 +8,55 @@ local language_servers_installed = {
 	"jsonls",
 }
 
--- Mappings.
-local opts = { noremap = true, silent = true }
-vim.keymap.set('n', '<space>ld', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.diagnostic.config({
-    virtual_text = false,
-    signs = true,
-    underline = true,
+local opts = { silent = true }
+vim.keymap.set("n", "<space>ld", vim.diagnostic.open_float, opts)
+vim.keymap.set("n", "[d", function()
+	vim.diagnostic.jump({ count = -1, float = true })
+end, opts)
+vim.keymap.set("n", "]d", function()
+	vim.diagnostic.jump({ count = 1, float = true })
+end, opts)
+
+vim.lsp.config("*", {
+	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-capabilities.textDocument.documentSymbol = {
-    dynamicRegistration = true,
-    hierarchicalDocumentSymbolSupport = true,
-}
+local group = vim.api.nvim_create_augroup("user_lsp", { clear = true })
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = group,
+	callback = function(args)
+		local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+		local bufnr = args.buf
+		local bufopts = { silent = true, buffer = bufnr }
 
-local on_attach = function(client, bufnr)
-	client.server_capabilities.semanticTokensProvider = nil
+		if client:supports_method("textDocument/documentSymbol", bufnr) then
+			require("nvim-navic").attach(client, bufnr)
+		end
 
-	-- Enable completion triggered by <c-x><c-o>
-	vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
-	-- Initialize navic if document symbols are supported
-	if client.server_capabilities.documentSymbolProvider then
-		require("nvim-navic").attach(client, bufnr)
-	end
-
-	-- Mappings.
-	local bufopts = { noremap = true, silent = true, buffer = bufnr }
-	vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-	vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-	vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-	vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
-	vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-	vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
-	vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-	vim.keymap.set('n', '<space>f', function()
-		require("conform").format({
-			lsp_fallback = true,
-			async = false,
-			timeout_ms = 500,
-		})
-	end, bufopts)
-end
-
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+		vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
+		vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
+		vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+		vim.keymap.set("n", "<space>th", function()
+			local filter = { bufnr = bufnr }
+			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), filter)
+		end, vim.tbl_extend("force", bufopts, { desc = "Toggle LSP inlay hints" }))
+		vim.keymap.set("n", "<space>f", function()
+			require("conform").format({
+				bufnr = bufnr,
+				lsp_format = "fallback",
+				async = false,
+				timeout_ms = 1000,
+			})
+		end, vim.tbl_extend("force", bufopts, { desc = "Format buffer" }))
+	end,
+})
 
 for _, server in ipairs(language_servers_installed) do
-	vim.lsp.config(server, {
-        on_attach = on_attach,
-        capabilities = capabilities,
-    })
-    vim.lsp.enable(server)
+	vim.lsp.enable(server)
 end

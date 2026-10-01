@@ -1,10 +1,8 @@
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-	border = "single"
-})
-
 vim.diagnostic.config({
-	virtual_text = true,
+	virtual_text = false,
+	signs = true,
+	underline = true,
 	float = {
-		border = "single"
-	}
+		border = "single",
+	},
 })

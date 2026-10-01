@@ -2,7 +2,7 @@
 
 require('gitsigns').setup {
 	on_attach                    = function(bufnr)
-		local gs = package.loaded.gitsigns
+		local gs = require('gitsigns')
 
 		local function map(mode, l, r, opts)
 			opts = opts or {}
@@ -12,16 +12,20 @@ require('gitsigns').setup {
 
 		-- Navigation
 		map('n', ']c', function()
-			if vim.wo.diff then return ']c' end
-			vim.schedule(function() gs.next_hunk() end)
-			return '<Ignore>'
-		end, { expr = true })
+			if vim.wo.diff then
+				vim.cmd.normal({ ']c', bang = true })
+			else
+				gs.nav_hunk('next')
+			end
+		end)
 
 		map('n', '[c', function()
-			if vim.wo.diff then return '[c' end
-			vim.schedule(function() gs.prev_hunk() end)
-			return '<Ignore>'
-		end, { expr = true })
+			if vim.wo.diff then
+				vim.cmd.normal({ '[c', bang = true })
+			else
+				gs.nav_hunk('prev')
+			end
+		end)
 		-- Actions
 		map('n', '<Space>hs', gs.stage_hunk)
 		map('n', '<Space>hr', gs.reset_hunk)
@@ -35,7 +39,7 @@ require('gitsigns').setup {
 		map('n', '<Space>tb', gs.toggle_current_line_blame)
 		map('n', '<Space>hd', gs.diffthis)
 		map('n', '<Space>hD', function() gs.diffthis('~') end)
-		map('n', '<Spce>td', gs.toggle_deleted)
+		map('n', '<Space>td', gs.toggle_deleted)
 
 		-- Text object
 		map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')

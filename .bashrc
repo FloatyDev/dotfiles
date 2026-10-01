@@ -10,8 +10,7 @@ case $- in
 esac
 
 # ─── History ──────────────────────────────────────────────────────────────────
-HISTCONTROL=ignoreboth
-HISTSIZE=1000
+HISTCONTROL=ignoreboth HISTSIZE=1000
 HISTFILESIZE=2000
 shopt -s histappend
 shopt -s checkwinsize
@@ -21,11 +20,17 @@ shopt -s checkwinsize
 
 # ─── Prompt ───────────────────────────────────────────────────────────────────
 parse_git_branch() {
-    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+    local ref
+
+    if ref=$(git symbolic-ref --quiet --short HEAD 2>/dev/null); then
+        printf '(%s)' "$ref"
+    elif ref=$(git rev-parse --short HEAD 2>/dev/null); then
+        printf '(%s)' "$ref"
+    fi
 }
 
 case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes ;;
+    alacritty|xterm-color|*-256color) color_prompt=yes ;;
 esac
 
 if [ "$color_prompt" = yes ]; then
@@ -37,7 +42,7 @@ unset color_prompt
 
 # Set terminal title
 case "$TERM" in
-xterm*|rxvt*)
+alacritty|xterm*|rxvt*)
     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
     ;;
 esac
@@ -47,20 +52,26 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+    alias fgrep='grep -F --color=auto'
+    alias egrep='grep -E --color=auto'
 fi
 
 # ─── Common aliases ───────────────────────────────────────────────────────────
 # Capture TTY for osc52copy clipboard provider used inside nvim
-export NVIM_TTY=$(tty)
+if [[ -t 0 ]]; then
+    NVIM_TTY=$(tty)
+    export NVIM_TTY
+fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # ─── PATH — local binaries ────────────────────────────────────────────────────
-export PATH="$HOME/.local/bin:$PATH"
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
 
 # ─── Dotfiles bare repo alias ─────────────────────────────────────────────────
 alias dotfiles='/usr/bin/git --git-dir="$HOME/.dotfiles" --work-tree="$HOME"'

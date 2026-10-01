@@ -1,199 +1,270 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
+if not vim.uv.fs_stat(lazypath) then
+	local output = vim.fn.system({
 		"git",
 		"clone",
 		"--filter=blob:none",
+		"--branch=stable",
 		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
 		lazypath,
 	})
+	if vim.v.shell_error ~= 0 then
+		error("Unable to install lazy.nvim:\n" .. output)
+	end
 end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+	{
+		"sainnhe/gruvbox-material",
+		lazy = false,
+		priority = 1000,
+	},
+	{ "Mofiqul/dracula.nvim" },
 
-	-- themes
-	"Mofiqul/dracula.nvim",
+	-- The rewritten main branch explicitly does not support lazy loading.
+	{
+		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
+		lazy = false,
+		build = ":TSUpdate",
+		config = function()
+			require("user._treesitter")
+		end,
+	},
 
-	--	"ellisonleao/gruvbox.nvim",
-
-	"sainnhe/gruvbox-material",
-
-	--editing
 	{
 		"windwp/nvim-autopairs",
+		event = "InsertEnter",
 		config = function()
 			require("user._autopairs")
 		end,
 	},
-
-	-- lsp
-	"neovim/nvim-lspconfig",
-
-	"williamboman/mason.nvim",
-
-	"williamboman/mason-lspconfig.nvim",
-
-	'mfussenegger/nvim-jdtls',
-
-	{
-		'mfussenegger/nvim-dap',
-		config = function()
-			require("user._dap")
-		end,
-	},
-
-	{
-		'mfussenegger/nvim-dap-python',
-		dependencies = {
-			'mfussenegger/nvim-dap',
-		},
-		config = function()
-			require("user._dap_python")
-		end,
-	},
-	--format
-	{
-		"stevearc/conform.nvim",
-		event = { "BufReadPre", "BufNewFile" },
-		config = function()
-			require("user._conform")
-		end,
-	},
-
-	-- cmp
 	{
 		"hrsh7th/nvim-cmp",
-		config = function()
-			require("user._cmp")
-		end,
+		event = "InsertEnter",
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-path",
-			"L3MON4D3/LuaSnip",
+			{
+				"L3MON4D3/LuaSnip",
+				build = "make install_jsregexp",
+			},
+			"onsails/lspkind-nvim",
 		},
+		config = function()
+			require("user._cmp")
+		end,
 	},
 
 	{
-		'akinsho/bufferline.nvim',
-		branch = "main",
-		dependencies = 'nvim-tree/nvim-web-devicons',
+		"neovim/nvim-lspconfig",
+		event = { "BufReadPre", "BufNewFile" },
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+			{
+				"SmiteshP/nvim-navic",
+				config = function()
+					require("user._nvim-navic")
+				end,
+			},
+		},
+		config = function()
+			require("user.lsp")
+		end,
+	},
+	{
+		"mason-org/mason.nvim",
+		cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonLog" },
+		build = ":MasonUpdate",
+		opts = {},
+	},
+	{
+		"mason-org/mason-lspconfig.nvim",
+		cmd = { "LspInstall", "LspUninstall" },
+		dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
+		config = function()
+			require("user.lsp.mason")
+		end,
+	},
+	{
+		"mfussenegger/nvim-jdtls",
+		event = { "BufReadPre *.java", "BufNewFile *.java" },
+		dependencies = { "neovim/nvim-lspconfig" },
+	},
+
+	{
+		"mfussenegger/nvim-dap",
+		keys = {
+			"<F5>", "<F10>", "<F11>", "<F12>",
+			"<Space>db", "<Space>dB", "<Space>lp", "<Space>dr", "<Space>dl",
+			{ "<Space>dh", mode = { "n", "v" } },
+			{ "<Space>dp", mode = { "n", "v" } },
+			"<Space>df", "<Space>ds",
+		},
+		config = function()
+			require("user._dap")
+		end,
+	},
+	{
+		"mfussenegger/nvim-dap-python",
+		keys = { "<Space>dpr" },
+		dependencies = { "mfussenegger/nvim-dap" },
+		config = function()
+			require("user._dap_python")
+		end,
+	},
+
+	{
+		"stevearc/conform.nvim",
+		cmd = "ConformInfo",
+		config = function()
+			require("user._conform")
+		end,
+	},
+	{
+		"akinsho/bufferline.nvim",
+		event = "VeryLazy",
+		dependencies = "nvim-tree/nvim-web-devicons",
 		config = function()
 			require("user._bufferline")
 		end,
-		--config = require("_bufferline")
 	},
-
-	-- git-neovim integration
 	{
 		"lewis6991/gitsigns.nvim",
+		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			require("user._gitsigns")
 		end,
 	},
-
 	{
-		'stevearc/oil.nvim',
+		"stevearc/oil.nvim",
+		cmd = "Oil",
+		keys = {
+			{ "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
+		},
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("user._oil")
 		end,
-		-- Optional dependencies
-		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
-
 	{
 		"michaelb/sniprun",
-		build = "sh ./install.sh",
+		build = "bash ./install.sh 1",
+		cmd = { "SnipRun", "SnipInfo", "SnipReset", "SnipReplMemoryClean" },
 	},
-
 	{
 		"akinsho/toggleterm.nvim",
+		cmd = { "ToggleTerm", "TermExec" },
+		keys = { "<C-t>" },
 		config = function()
 			require("user._toggleterm")
 		end,
 	},
-
 	{
 		"nvim-telescope/telescope.nvim",
+		cmd = "Telescope",
+		keys = {
+			"<Space>s", "<Space>gr", "<Space>R", "<Space>tr",
+			"<Space>lr", "<Space>gt", "<Space>lD", "<Space>li",
+		},
 		dependencies = "nvim-lua/plenary.nvim",
 		config = function()
 			require("user._telescope")
 		end,
 	},
-
-	"lukas-reineke/indent-blankline.nvim",
-
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
+		event = { "BufReadPost", "BufNewFile" },
+		config = function()
+			require("user._indentation")
+		end,
+	},
 	{
 		"nvim-lualine/lualine.nvim",
+		event = "VeryLazy",
+		dependencies = { "nvim-tree/nvim-web-devicons", "SmiteshP/nvim-navic" },
 		config = function()
 			require("user._lualine")
 		end,
-		dependencies = {
-			"nvim-tree/nvim-web-devicons",
-		}
 	},
-
 	{
 		"nvimdev/dashboard-nvim",
 		event = "VimEnter",
+		cmd = "Dashboard",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("user._dashboard")
 		end,
-		dependencies = { { 'nvim-tree/nvim-web-devicons', name = 'tree_nvim_web_devicons' } },
-	},
-
-	{
-		"onsails/lspkind-nvim",
-	},
-	{
-		"SmiteshP/nvim-navic",
-		dependencies = { "neovim/nvim-lspconfig" },
-		config = function()
-			require("user._nvim-navic")
-		end
 	},
 
 	{
 		"ravitemer/mcphub.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		build = "bundled_build.lua",
-		event = "VeryLazy",
 		config = function()
-			require("mcphub").setup({
-				use_bundled_binary = true,
-			})
+			require("mcphub").setup({ use_bundled_binary = true })
 		end,
 	},
-
 	{
 		"olimorris/codecompanion.nvim",
+		cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
+		keys = {
+			{ "<C-a>", "<cmd>CodeCompanionActions<cr>", mode = { "n", "v" }, desc = "CodeCompanion actions" },
+			{
+				"<Space>a",
+				function()
+					require("codecompanion").toggle_cli({ agent = "codex" })
+				end,
+				mode = { "n", "v" },
+				desc = "Toggle Codex CLI",
+			},
+			{ "ga", "<cmd>CodeCompanionChat Add<cr>", mode = "v", desc = "Add selection to CodeCompanion" },
+		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
 			"ravitemer/codecompanion-history.nvim",
-			"ravitemer/mcphub.nvim", -- ensures mcphub loads first
+			"ravitemer/mcphub.nvim",
 		},
 		config = function()
 			require("user._cc")
 		end,
 	},
-
 	{
 		"zbirenbaum/copilot.lua",
 		cmd = "Copilot",
+		event = "InsertEnter",
 		config = function()
 			require("user._copilot")
-		end
+		end,
 	},
 	{
-		"MeanderingProgrammer/render-markdown.nvim", -- Make Markdown buffers look beautiful
+		"MeanderingProgrammer/render-markdown.nvim",
 		ft = { "markdown", "codecompanion" },
 		opts = {
-			render_modes = true, -- Render in ALL modes
-			sign = {
-				enabled = false, -- Turn off in the status column
+			-- Keep source text stable while typing and render after leaving insert mode.
+			render_modes = { "n", "c", "t" },
+			sign = { enabled = false },
+			completions = { lsp = { enabled = true } },
+			latex = { enabled = false },
+		},
+	},
+}, {
+	defaults = { lazy = true },
+	rocks = { enabled = false },
+	change_detection = { notify = false },
+	performance = {
+		rtp = {
+			disabled_plugins = {
+				"gzip",
+				"netrwPlugin",
+				"tarPlugin",
+				"tohtml",
+				"tutor",
+				"zipPlugin",
 			},
 		},
 	},

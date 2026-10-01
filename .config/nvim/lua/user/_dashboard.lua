@@ -95,7 +95,7 @@ local center = {
 	},
 }
 
-vim.api.nvim_create_autocmd("Filetype", {
+vim.api.nvim_create_autocmd("FileType", {
 	pattern = "dashboard",
 	group = vim.api.nvim_create_augroup("Dashboard_au", { clear = true }),
 	callback = function()
