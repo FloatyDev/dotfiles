@@ -28,13 +28,13 @@ cd ~/dotfiles && bash install.sh
 ### What the script does
 
 1. Reads the repo URL from `git remote get-url origin` — no hardcoded paths
-2. Installs system packages via `apt`
+2. Installs system packages via `apt`, including Alacritty and tmux
 3. Downloads the latest stable Neovim (0.11+) to `~/.local/bin/nvim`
 4. Clones the bare repo to `~/.dotfiles` with `$HOME` as the work tree
 5. Backs up any conflicting files to `~/.dotfiles-backup/<timestamp>/`
 6. Force checks out all config files to their correct locations
 7. Creates `~/.bash_local` from `.bash_local.example`
-8. Pre-installs `lazy.nvim`, `black`, `isort`, `mcp-hub`
+8. Pre-installs `lazy.nvim`, `black`, `isort`, `mcp-hub`, and the Treesitter CLI
 
 ### Options
 
@@ -91,6 +91,8 @@ dotfiles push / pull
 ## Neovim plugins
 
 Managed by [lazy.nvim](https://github.com/folke/lazy.nvim), auto-installs on first launch.
+Plugin revisions are pinned by `.config/nvim/lazy-lock.json` so a fresh machine
+starts from the same tested plugin set.
 Run `:MasonUpdate` to install LSP servers: `clangd`, `lua_ls`, `pyright`, `bashls`, `jsonls`.
 
 ---

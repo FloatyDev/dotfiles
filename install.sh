@@ -186,6 +186,7 @@ install_deps() {
         git curl wget unzip
         ripgrep
         fd-find
+        alacritty tmux
         xclip
         nodejs npm
         python3 python3-pip
