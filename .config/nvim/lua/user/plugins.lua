@@ -157,7 +157,7 @@ require("lazy").setup({
 	{
 		"akinsho/toggleterm.nvim",
 		cmd = { "ToggleTerm", "TermExec" },
-		keys = { "<C-t>" },
+		keys = { "<C-t>", { "<Space>a", desc = "Toggle Claude" } },
 		config = function()
 			require("user._toggleterm")
 		end,
@@ -201,39 +201,6 @@ require("lazy").setup({
 	},
 
 	{
-		"ravitemer/mcphub.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
-		build = "bundled_build.lua",
-		config = function()
-			require("mcphub").setup({ use_bundled_binary = true })
-		end,
-	},
-	{
-		"olimorris/codecompanion.nvim",
-		cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
-		keys = {
-			{ "<C-a>", "<cmd>CodeCompanionActions<cr>", mode = { "n", "v" }, desc = "CodeCompanion actions" },
-			{
-				"<Space>a",
-				function()
-					require("codecompanion").toggle_cli({ agent = "claude" })
-				end,
-				mode = { "n", "v" },
-				desc = "Toggle Claude CLI",
-			},
-			{ "ga", "<cmd>CodeCompanionChat Add<cr>", mode = "v", desc = "Add selection to CodeCompanion" },
-		},
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
-			"ravitemer/codecompanion-history.nvim",
-			"ravitemer/mcphub.nvim",
-		},
-		config = function()
-			require("user._cc")
-		end,
-	},
-	{
 		"zbirenbaum/copilot.lua",
 		cmd = "Copilot",
 		event = "InsertEnter",
@@ -243,7 +210,7 @@ require("lazy").setup({
 	},
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
-		ft = { "markdown", "codecompanion" },
+		ft = { "markdown" },
 		opts = {
 			-- Keep source text stable while typing and render after leaving insert mode.
 			render_modes = { "n", "c", "t" },
