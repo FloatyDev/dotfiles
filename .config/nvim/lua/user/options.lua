@@ -132,3 +132,6 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter", "WinEnter" }, {
 
 -- Start with all folds open
 vim.o.foldlevelstart = 99
+
+-- Faster CursorHold: refreshes navic symbols/breadcrumb and other hold-based features sooner
+vim.o.updatetime = 300

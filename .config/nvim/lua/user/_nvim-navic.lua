@@ -31,5 +31,5 @@ require("nvim-navic").setup({
 	separator = " > ",
 	depth_limit = 0,
 	depth_limit_indicator = "..",
-	lazy_update_context = true,
+	lazy_update_context = false, -- update on every cursor move, not only on CursorHold
 })
