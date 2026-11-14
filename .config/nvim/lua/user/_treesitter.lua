@@ -40,7 +40,7 @@ end
 local group = vim.api.nvim_create_augroup("user_treesitter", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
 	group = group,
-	pattern = vim.list_extend(vim.deepcopy(parsers), { "jsonc" }),
+	pattern = vim.list_extend(vim.deepcopy(parsers), { "jsonc", "sh" }),
 	callback = function(args)
 		pcall(vim.treesitter.start, args.buf)
 	end,
