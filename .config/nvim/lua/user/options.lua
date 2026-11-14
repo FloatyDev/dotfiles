@@ -76,7 +76,8 @@ vim.opt.listchars = { trail = '·', tab = "  " }
 vim.opt.laststatus = 3
 vim.opt.signcolumn = 'yes'
 vim.opt.number = true
-vim.opt.cmdheight = 0
+-- Reserve space for messages so they do not interrupt typing with hit-enter prompts.
+vim.opt.cmdheight = 1
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 vim.opt.winborder = "single"
@@ -112,3 +113,19 @@ vim.keymap.set('n', '<Space>b',
 			end
 		end
 	end, { silent = true, desc = 'Close unused buffers' })
+
+-- ─── Window navigation (works from normal AND terminal mode) ────────────────
+-- Alt+h/j/k/l jumps between splits without leaving insert/terminal mode,
+-- so you can leave the AI terminal without clicking or pressing Esc.
+for _, key in ipairs({ "h", "j", "k", "l" }) do
+	vim.keymap.set({ "n", "i", "v" }, "<A-" .. key .. ">", "<C-w>" .. key, { desc = "Focus window " .. key })
+	vim.keymap.set("t", "<A-" .. key .. ">", "<C-\\><C-n><C-w>" .. key, { desc = "Focus window " .. key })
+end
+-- Alt+w cycles to the next window (handy with just two panels)
+vim.keymap.set({ "n", "i", "v" }, "<A-w>", "<C-w>w", { desc = "Next window" })
+vim.keymap.set("t", "<A-w>", "<C-\\><C-n><C-w>w", { desc = "Next window" })
+-- Enter terminal windows directly in insert mode so you can type right away
+vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter", "WinEnter" }, {
+	pattern = "term://*",
+	callback = function() vim.cmd("startinsert") end,
+})

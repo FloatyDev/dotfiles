@@ -216,10 +216,10 @@ require("lazy").setup({
 			{
 				"<Space>a",
 				function()
-					require("codecompanion").toggle_cli({ agent = "codex" })
+					require("codecompanion").toggle_cli({ agent = "claude" })
 				end,
 				mode = { "n", "v" },
-				desc = "Toggle Codex CLI",
+				desc = "Toggle Claude CLI",
 			},
 			{ "ga", "<cmd>CodeCompanionChat Add<cr>", mode = "v", desc = "Add selection to CodeCompanion" },
 		},

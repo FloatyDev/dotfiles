@@ -80,8 +80,13 @@ require("codecompanion").setup({
 			adapter = "deepseek",
 		},
 		cli = {
-			agent = "codex",
+			agent = "claude",
 			agents = {
+				claude = {
+					cmd = "claude",
+					args = {},
+					description = "Claude Code CLI",
+				},
 				codex = {
 					cmd = "codex",
 					args = {},
