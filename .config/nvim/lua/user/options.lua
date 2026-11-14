@@ -129,3 +129,6 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter", "WinEnter" }, {
 	pattern = "term://*",
 	callback = function() vim.cmd("startinsert") end,
 })
+
+-- Start with all folds open
+vim.o.foldlevelstart = 99

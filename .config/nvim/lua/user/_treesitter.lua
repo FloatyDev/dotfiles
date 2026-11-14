@@ -14,6 +14,11 @@ local parsers = {
 	"markdown_inline",
 	"html",
 	"yaml",
+	"regex",
+	"luadoc",
+	"query",
+	"diff",
+	"gitcommit",
 }
 
 require("nvim-treesitter").setup({
@@ -42,6 +47,10 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = group,
 	pattern = vim.list_extend(vim.deepcopy(parsers), { "jsonc", "sh" }),
 	callback = function(args)
-		pcall(vim.treesitter.start, args.buf)
+		if pcall(vim.treesitter.start, args.buf) then
+			-- Treesitter-based folds (open by default, see foldlevelstart)
+			vim.wo[0][0].foldmethod = "expr"
+			vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+		end
 	end,
 })
