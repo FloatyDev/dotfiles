@@ -81,14 +81,6 @@ require("lazy").setup({
 		opts = {},
 	},
 	{
-		"mason-org/mason-lspconfig.nvim",
-		cmd = { "LspInstall", "LspUninstall" },
-		dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
-		config = function()
-			require("user.lsp.mason")
-		end,
-	},
-	{
 		"mfussenegger/nvim-jdtls",
 		event = { "BufReadPre *.java", "BufNewFile *.java" },
 		dependencies = { "neovim/nvim-lspconfig" },
